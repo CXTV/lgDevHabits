@@ -30,6 +30,6 @@
     <PackageReference Include="System.Linq.Dynamic.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Migrations\Application\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>

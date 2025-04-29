@@ -5,6 +5,7 @@ using lgDevHabit.Api.Services.GitHub;
 using lgDevHabit.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
 namespace lgDevHabit.Api.Controllers;
 
@@ -12,6 +13,8 @@ namespace lgDevHabit.Api.Controllers;
 [Authorize(Roles = Roles.Member)]
 [ApiController]
 [Route("github")]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
 public sealed class GitHubController(
     GitHubAccessTokenService gitHubAccessTokenService,
     GitHubService gitHubService,

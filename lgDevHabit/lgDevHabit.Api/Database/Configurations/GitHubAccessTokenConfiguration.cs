@@ -19,3 +19,5 @@ internal sealed class GitHubAccessTokenConfiguration : IEntityTypeConfiguration<
             .HasForeignKey<GitHubAccessToken>(gh => gh.UserId);
     }
 }
+
+

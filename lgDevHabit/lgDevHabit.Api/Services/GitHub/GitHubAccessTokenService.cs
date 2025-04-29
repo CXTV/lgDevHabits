@@ -10,13 +10,15 @@ public sealed class GitHubAccessTokenService(
     EncryptionService encryptionService
     )
 {
+    //存储GitHub Access Token
     public async Task StoreAsync(
         string userId,
         StoreGitHubAccessTokenDto accessTokenDto,
         CancellationToken cancellationToken = default)
     {
+        //查询数据库里的token
         GitHubAccessToken? existingAccessToken = await GetAccessTokenAsync(userId, cancellationToken);
-
+        //加密token
         string accessToken = encryptionService.Encrypt(accessTokenDto.AccessToken);
 
         if (existingAccessToken is not null)
@@ -39,7 +41,7 @@ public sealed class GitHubAccessTokenService(
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-
+    //获取GitHub Access Token
     public async Task<string?> GetAsync(string userId, CancellationToken cancellationToken = default)
     {
         GitHubAccessToken? accessToken = await GetAccessTokenAsync(userId, cancellationToken);
@@ -48,12 +50,12 @@ public sealed class GitHubAccessTokenService(
         {
             return null;
         }
-
         string decryptedToken = encryptionService.Decrypt(accessToken.Token);
 
         return decryptedToken;
     }
 
+    //撤销GitHub Access Token
     public async Task RevokeAsync(string userId, CancellationToken cancellationToken = default)
     {
         GitHubAccessToken? accessToken = await GetAccessTokenAsync(userId, cancellationToken);
@@ -66,7 +68,7 @@ public sealed class GitHubAccessTokenService(
         dbContext.GitHubAccessTokens.Remove(accessToken);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
-
+    //读取数据库中的token
     private async Task<GitHubAccessToken?> GetAccessTokenAsync(string userId, CancellationToken cancellationToken)
     {
         return await dbContext.GitHubAccessTokens
