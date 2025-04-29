@@ -1,0 +1,212 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Csharp20241101\\day0415\\lgDevHabit\\lgDevHabit.Api\\lgDevHabit.Api.csproj": {}
+  },
+  "projects": {
+    "D:\\Csharp20241101\\day0415\\lgDevHabit\\lgDevHabit.Api\\lgDevHabit.Api.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Csharp20241101\\day0415\\lgDevHabit\\lgDevHabit.Api\\lgDevHabit.Api.csproj",
+        "projectName": "lgDevHabit.Api",
+        "projectPath": "D:\\Csharp20241101\\day0415\\lgDevHabit\\lgDevHabit.Api\\lgDevHabit.Api.csproj",
+        "packagesPath": "C:\\Users\\HFY\\.nuget\\packages\\",
+        "outputPath": "D:\\Csharp20241101\\day0415\\lgDevHabit\\lgDevHabit.Api\\obj\\",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "fallbackFolders": [
+          "D:\\Program Files\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\HFY\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Asp.Versioning.Mvc": {
+              "target": "Package",
+              "version": "[8.1.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Bogus": {
+              "target": "Package",
+              "version": "[35.6.3, )",
+              "versionCentrallyManaged": true
+            },
+            "EFCore.NamingConventions": {
+              "target": "Package",
+              "version": "[9.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[11.11.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.0.4, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.4, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.JsonPatch": {
+              "target": "Package",
+              "version": "[9.0.4, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
+              "target": "Package",
+              "version": "[9.0.4, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.3, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.4, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
+              "target": "Package",
+              "version": "[1.21.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )",
+              "versionCentrallyManaged": true
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[9.0.4, )",
+              "versionCentrallyManaged": true
+            },
+            "Npgsql.OpenTelemetry": {
+              "target": "Package",
+              "version": "[9.0.3, )",
+              "versionCentrallyManaged": true
+            },
+            "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
+              "target": "Package",
+              "version": "[1.11.2, )",
+              "versionCentrallyManaged": true
+            },
+            "OpenTelemetry.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[1.11.2, )",
+              "versionCentrallyManaged": true
+            },
+            "OpenTelemetry.Instrumentation.AspNetCore": {
+              "target": "Package",
+              "version": "[1.11.1, )",
+              "versionCentrallyManaged": true
+            },
+            "OpenTelemetry.Instrumentation.Http": {
+              "target": "Package",
+              "version": "[1.11.1, )",
+              "versionCentrallyManaged": true
+            },
+            "OpenTelemetry.Instrumentation.Runtime": {
+              "target": "Package",
+              "version": "[1.11.1, )",
+              "versionCentrallyManaged": true
+            },
+            "SonarAnalyzer.CSharp": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[10.7.0.110445, )",
+              "versionCentrallyManaged": true
+            },
+            "System.Linq.Dynamic.Core": {
+              "target": "Package",
+              "version": "[1.6.0.2, )",
+              "versionCentrallyManaged": true
+            }
+          },
+          "centralPackageVersions": {
+            "Asp.Versioning.Mvc": "8.1.0",
+            "Bogus": "35.6.3",
+            "EFCore.NamingConventions": "9.0.0",
+            "FluentValidation.DependencyInjectionExtensions": "11.11.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.4",
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.4",
+            "Microsoft.AspNetCore.JsonPatch": "9.0.4",
+            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "9.0.4",
+            "Microsoft.AspNetCore.OpenApi": "9.0.3",
+            "Microsoft.EntityFrameworkCore.Tools": "9.0.4",
+            "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": "1.21.0",
+            "Newtonsoft.Json": "13.0.3",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
+            "Npgsql.OpenTelemetry": "9.0.3",
+            "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.11.2",
+            "OpenTelemetry.Extensions.Hosting": "1.11.2",
+            "OpenTelemetry.Instrumentation.AspNetCore": "1.11.1",
+            "OpenTelemetry.Instrumentation.Http": "1.11.1",
+            "OpenTelemetry.Instrumentation.Runtime": "1.11.1",
+            "SonarAnalyzer.CSharp": "10.7.0.110445",
+            "System.Linq.Dynamic.Core": "1.6.0.2"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+@lgDevHabit.Api_HostAddress = http://localhost:5000
+
+GET {{lgDevHabit.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

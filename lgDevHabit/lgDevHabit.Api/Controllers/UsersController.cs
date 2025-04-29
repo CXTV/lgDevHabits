@@ -1,0 +1,68 @@
+﻿using lgDevHabit.Api.Database;
+using lgDevHabit.Api.DTOs.Users;
+using lgDevHabit.Api.Entities;
+using lgDevHabit.Api.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace lgDevHabit.Api.Controllers;
+
+
+[Authorize(Roles = Roles.Member)]
+[ApiController]
+[Route("users")]
+[Authorize]
+public sealed class UsersController(
+    ApplicationDbContext dbContext,
+    UserContext userContext
+    ) : ControllerBase
+{
+
+    [HttpGet("{id}")]
+    [Authorize(Roles = Roles.Admin)]
+    public async Task<ActionResult<UserDto>> GetUserById(string id)
+    {
+        string? userId = await userContext.GetUserIdAsync();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized();
+        }
+
+        if (id != userId)
+        {
+            return Forbid();
+        }
+
+        UserDto? user = await dbContext.Users
+            .Where(u => u.Id == id)
+            .Select(UserQueries.ProjectToDto())
+            .FirstOrDefaultAsync();
+
+        return Ok(user);
+    }
+
+
+    [HttpGet("me")]
+    public async Task<ActionResult<UserDto>> GetCurrentUser()
+    {
+        string? userId = await userContext.GetUserIdAsync();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized();
+        }
+
+        UserDto? user = await dbContext.Users
+            .Where(u => u.Id == userId)
+            .Select(UserQueries.ProjectToDto())
+            .FirstOrDefaultAsync();
+
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(user);
+    }
+
+}

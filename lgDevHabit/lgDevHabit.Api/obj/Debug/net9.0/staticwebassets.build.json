@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "IKNy3O95CuFwPXhGv10K5kZB6VazwzxiaH0mqZ11buM=",
+  "Source": "lgDevHabit.Api",
+  "BasePath": "_content/lgDevHabit.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
