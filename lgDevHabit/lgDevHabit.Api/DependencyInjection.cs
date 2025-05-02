@@ -27,6 +27,7 @@ using lgDevHabit.Api.Jobs;
 using CorsOptions = lgDevHabit.Api.Settings.CorsOptions;
 using Quartz;
 using lgDevHabit.Api.DTOs.Entries;
+using Refit;
 
 namespace lgDevHabit.Api;
 
@@ -182,6 +183,13 @@ public static class DependencyInjection
                     .Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
             });
 
+        //Refit
+        builder.Services.AddTransient<RefitGitHubService>();
+        builder.Services
+            .AddRefitClient<IGitHubApi>(new RefitSettings { ContentSerializer = new NewtonsoftJsonContentSerializer() })
+            .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://api.github.com"));
+
+
         //加密服务
         builder.Services.Configure<EncryptionOptions>(builder.Configuration.GetSection("Encryption"));
         builder.Services.AddTransient<EncryptionService>();
@@ -195,6 +203,7 @@ public static class DependencyInjection
 
         //ETag
         builder.Services.AddSingleton<InMemoryETagStore>();
+
 
         return builder;
     }

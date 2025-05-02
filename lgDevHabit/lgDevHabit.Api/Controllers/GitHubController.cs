@@ -16,7 +16,7 @@ namespace lgDevHabit.Api.Controllers;
 [ProducesResponseType(StatusCodes.Status403Forbidden)]
 public sealed class GitHubController(
     GitHubAccessTokenService gitHubAccessTokenService,
-    GitHubService gitHubService,
+    RefitGitHubService gitHubService,
     UserContext userContext,
     LinkService linkService) : ControllerBase
 {
