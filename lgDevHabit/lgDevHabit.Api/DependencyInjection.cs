@@ -221,7 +221,7 @@ public static class DependencyInjection
         return builder;
     }
 
-    //Github自动化的定时任务
+    //Github自动化的Quartz定时任务
     public static WebApplicationBuilder AddBackgroundJobs(this WebApplicationBuilder builder)
     {
         builder.Services.AddQuartz(q =>

@@ -11,6 +11,7 @@ builder
     .AddObservability()
     .AddApplicationServices()
     .AddAuthenticationServices()
+    .AddBackgroundJobs()
     .AddCorsPolicy();
 
 
