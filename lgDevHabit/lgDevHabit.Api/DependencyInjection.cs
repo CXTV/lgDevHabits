@@ -154,9 +154,8 @@ public static class DependencyInjection
             HabitMappings.SortMapping);
         //注册Entry映射
         builder.Services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<EntryDto, Entry>>(_ => EntryMappings.SortMapping);
-
+        //DatashapingService
         builder.Services.AddTransient<DataShapingService>();
-
         //注册httpContextAccessor
         builder.Services.AddHttpContextAccessor();
         //注册链接服务
@@ -167,6 +166,8 @@ public static class DependencyInjection
         builder.Services.AddMemoryCache();
         //注册UserContext
         builder.Services.AddScoped<UserContext>();
+        //创建httppResilience
+        builder.Services.AddHttpClient().ConfigureHttpClientDefaults(b => b.AddStandardResilienceHandler());
         //GitHub
         builder.Services.AddScoped<GitHubAccessTokenService>();
         builder.Services.AddTransient<GitHubService>();
@@ -183,12 +184,15 @@ public static class DependencyInjection
                     .Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
             });
 
+        //Delay服务
+        builder.Services.AddTransient<DelayHandler>();
+
         //Refit
         builder.Services.AddTransient<RefitGitHubService>();
         builder.Services
             .AddRefitClient<IGitHubApi>(new RefitSettings { ContentSerializer = new NewtonsoftJsonContentSerializer() })
-            .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://api.github.com"));
-
+            .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://api.github.com"))
+            .AddHttpMessageHandler<DelayHandler>(); //添加延迟处理器
 
         //加密服务
         builder.Services.Configure<EncryptionOptions>(builder.Configuration.GetSection("Encryption"));
