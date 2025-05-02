@@ -23,8 +23,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using lgDevHabit.Api.Services.GitHub;
 using System.Net.Http.Headers;
+using lgDevHabit.Api.Jobs;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using CorsOptions = lgDevHabit.Api.Settings.CorsOptions;
+using Quartz;
 
 namespace lgDevHabit.Api;
 
@@ -177,8 +179,10 @@ public static class DependencyInjection
 
         //加密服务
         builder.Services.Configure<EncryptionOptions>(builder.Configuration.GetSection("Encryption"));
-
         builder.Services.AddTransient<EncryptionService>();
+
+        //github automation
+        builder.Services.Configure<GitHubAutomationOptions>(builder.Configuration.GetSection(GitHubAutomationOptions.SectionName));
 
         return builder;
     }
@@ -216,6 +220,32 @@ public static class DependencyInjection
 
         return builder;
     }
+
+    //Github自动化的定时任务
+    public static WebApplicationBuilder AddBackgroundJobs(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddQuartz(q =>
+        {
+            q.AddJob<GitHubAutomationSchedulerJob>(opts => opts.WithIdentity("github-automation-scheduler"));
+
+            q.AddTrigger(opts => opts
+                .ForJob("github-automation-scheduler")
+                .WithIdentity("github-automation-scheduler-trigger")
+                .WithSimpleSchedule(s =>
+                {
+                    GitHubAutomationOptions settings = builder.Configuration
+                        .GetSection(GitHubAutomationOptions.SectionName)
+                        .Get<GitHubAutomationOptions>()!;
+
+                    s.WithIntervalInMinutes(settings.ScanIntervalMinutes)
+                        .RepeatForever();
+                }));
+        });
+        builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
+        return builder;
+    }
+
 
     //跨域注册
     public static WebApplicationBuilder AddCorsPolicy(this WebApplicationBuilder builder)
