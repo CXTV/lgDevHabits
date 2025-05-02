@@ -10,11 +10,22 @@ using Microsoft.EntityFrameworkCore;
 using lgDevHabit.Api.Services;
 using Microsoft.Extensions.Options;
 using lgDevHabit.Api.Settings;
+using System.Net.Mime;
+using Microsoft.AspNetCore.Authorization;
 
 namespace lgDevHabit.Api.Controllers;
 
+[ResponseCache(Duration = 120)]
 [ApiController]
+[Authorize(Roles = Roles.Member)]
 [Route("tags")]
+[Produces(
+    MediaTypeNames.Application.Json,
+    CustomMediaTypeNames.Application.JsonV1,
+    CustomMediaTypeNames.Application.HateoasJson,
+    CustomMediaTypeNames.Application.HateoasJsonV1)]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
 public sealed class TagsController(
     ApplicationDbContext dbContext,
     LinkService linkService,
@@ -25,7 +36,7 @@ public sealed class TagsController(
 {
 
     [HttpGet]
-    public async Task<ActionResult<TagsCollectionDto>> GetTags([FromHeader] AcceptHeaderDto acceptHeader)
+    public async Task<ActionResult<TagsCollectionDto>> GetTags()
     {
         string? userId = await userContext.GetUserIdAsync();
         if (string.IsNullOrWhiteSpace(userId))
@@ -106,6 +117,7 @@ public sealed class TagsController(
             return BadRequest(problem);
         }
 
+        //判断是否超过最大标签数
         if (await dbContext.Tags.CountAsync(t => t.UserId == userId) >= options.Value.MaxAllowedTags)
         {
 
@@ -113,7 +125,6 @@ public sealed class TagsController(
                 "Reached the maximum number of allowed tags",
                 statusCode: StatusCodes.Status400BadRequest);
         }
-
 
         Tag tag = createTagDto.ToEntity(userId);
 

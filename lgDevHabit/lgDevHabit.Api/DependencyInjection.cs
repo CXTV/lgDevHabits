@@ -187,6 +187,13 @@ public static class DependencyInjection
         //github automation
         builder.Services.Configure<GitHubAutomationOptions>(builder.Configuration.GetSection(GitHubAutomationOptions.SectionName));
 
+        //TagsOptions
+        builder.Services.Configure<TagsOptions>(
+            builder.Configuration.GetSection(TagsOptions.SectionName));
+
+        //ETag
+        builder.Services.AddSingleton<InMemoryETagStore>();
+
         return builder;
     }
 

@@ -1,5 +1,6 @@
 using lgDevHabit.Api;
 using lgDevHabit.Api.Extensions;
+using lgDevHabit.Api.Middleware;
 using lgDevHabit.Api.Settings;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -35,6 +36,8 @@ app.UseCors(CorsOptions.PolicyName);
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ETagMiddleware>();
 
 app.MapControllers();
 
