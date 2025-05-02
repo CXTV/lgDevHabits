@@ -16,6 +16,10 @@ public sealed class Entry
 
     public Habit Habit { get; set; } // 导航属性，用于 Entity Framework 中的关联查询
 
+    public static string NewId()
+    {
+        return $"e_{Guid.CreateVersion7()}";
+    }
 
 }
 
@@ -23,4 +27,5 @@ public enum EntrySource
 {
     Manual = 0,      // 手动添加
     Automation = 1,  // 通过系统自动生成（例如 GitHub 数据等）
+    FileImport = 2,  // 文件导入
 }

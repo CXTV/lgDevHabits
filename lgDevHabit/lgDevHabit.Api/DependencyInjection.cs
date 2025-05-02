@@ -31,6 +31,7 @@ using Refit;
 using lgDevHabit.Api.Extensions;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Threading.RateLimiting;
+using DevHabit.Api.Jobs;
 
 namespace lgDevHabit.Api;
 
@@ -78,13 +79,10 @@ public static class DependencyInjection
             .AddMvc();
 
         builder.Services.AddOpenApi();
-
         builder.Services.AddResponseCaching();
-
 
         return builder;
     }
-
 
     public static WebApplicationBuilder AddErrorHandling(this WebApplicationBuilder builder)
     {
@@ -268,6 +266,13 @@ public static class DependencyInjection
                     s.WithIntervalInMinutes(settings.ScanIntervalMinutes)
                         .RepeatForever();
                 }));
+
+            // Entry import cleanup job - runs daily at 3 AM UTC
+            q.AddJob<CleanupEntryImportJobsJob>(opts => opts.WithIdentity("cleanup-entry-imports"));
+            q.AddTrigger(opts => opts
+                .ForJob("cleanup-entry-imports")
+                .WithIdentity("cleanup-entry-imports-trigger")
+                .WithCronSchedule("0 0 3 * * ?", x => x.InTimeZone(TimeZoneInfo.Utc)));
         });
         builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
