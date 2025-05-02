@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace lgDevHabit.Api.Migrations.Identity;
 
     /// <inheritdoc />
-    public partial class init_identity : Migration
+    public partial class dataBase_init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -289,3 +289,4 @@ namespace lgDevHabit.Api.Migrations.Identity;
                 schema: "identity");
         }
     }
+

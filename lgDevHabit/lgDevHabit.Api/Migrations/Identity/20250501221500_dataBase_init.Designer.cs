@@ -12,8 +12,8 @@ using lgDevHabit.Api.Database;
 namespace lgDevHabit.Api.Migrations.Identity
 {
     [DbContext(typeof(ApplicationIdentityDbContext))]
-    [Migration("20250429131651_init_identity")]
-    partial class init_identity
+    [Migration("20250501221500_dataBase_init")]
+    partial class dataBase_init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

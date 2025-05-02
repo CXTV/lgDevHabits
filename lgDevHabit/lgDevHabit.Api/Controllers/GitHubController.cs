@@ -5,7 +5,6 @@ using lgDevHabit.Api.Services.GitHub;
 using lgDevHabit.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
 
 namespace lgDevHabit.Api.Controllers;
 
