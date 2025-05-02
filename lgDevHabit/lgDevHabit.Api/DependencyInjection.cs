@@ -24,7 +24,6 @@ using System.Text;
 using lgDevHabit.Api.Services.GitHub;
 using System.Net.Http.Headers;
 using lgDevHabit.Api.Jobs;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using CorsOptions = lgDevHabit.Api.Settings.CorsOptions;
 using Quartz;
 using lgDevHabit.Api.DTOs.Entries;
@@ -75,6 +74,9 @@ public static class DependencyInjection
             .AddMvc();
 
         builder.Services.AddOpenApi();
+
+        builder.Services.AddResponseCaching();
+
 
         return builder;
     }

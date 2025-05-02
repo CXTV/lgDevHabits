@@ -96,6 +96,91 @@ public sealed class EntriesController(
         return Ok(paginationResult);
     }
 
+
+
+    //游标分页
+    [HttpGet("cursor")]
+    public async Task<IActionResult> GetEntriesCursor(
+        [FromQuery] EntriesCursorQueryParameters query,
+        DataShapingService dataShapingService)
+    {
+        string? userId = await userContext.GetUserIdAsync();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized();
+        }
+
+        if (!dataShapingService.Validate<EntryDto>(query.Fields))
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                detail: ErrorMessages.InvalidFields(query.Fields));
+        }
+
+        IQueryable<Entry> entriesQuery = dbContext.Entries
+            .Where(e => e.UserId == userId)
+            .Where(e => query.HabitId == null || e.HabitId == query.HabitId)
+            .Where(e => query.FromDate == null || e.Date >= query.FromDate)
+            .Where(e => query.ToDate == null || e.Date <= query.ToDate)
+            .Where(e => query.Source == null || e.Source == query.Source)
+            .Where(e => query.IsArchived == null || e.IsArchived == query.IsArchived);
+
+        //如果传入了游标，则根据游标进行查询
+        if (!string.IsNullOrWhiteSpace(query.Cursor))
+        {
+            //解码当前游标
+            var cursor = EntryCursorDto.Decode(query.Cursor);
+
+            //根据游标的日期和 ID 进行过滤
+            if (cursor is not null)
+            {
+                //根据解码的信息进行数据过滤
+                entriesQuery = entriesQuery.Where(e =>
+                    e.Date < cursor.Date ||
+                    e.Date == cursor.Date && string.Compare(e.Id, cursor.Id) <= 0);
+            }
+        }
+
+        List<EntryDto> entries = await entriesQuery
+            .OrderByDescending(e => e.Date)                // 先按日期倒序排序（最新的在前）
+            .ThenByDescending(e => e.Id)                   // 如果日期一样，再按 Id 倒序排序，保证排序唯一性
+            .Take(query.Limit + 1)                         // 取比请求数量多一条的数据（用于判断是否还有下一页）
+            .Select(EntryQueries.ProjectToDto())           // 将 Entry 实体映射为 EntryDto（通常用于简化返回数据）
+            .ToListAsync();                                // 异步执行查询并转成 List<EntryDto>
+
+        //如果拿到的数据大于Limit，说明还有下一页
+        bool hasNextPage = entries.Count > query.Limit;
+        string? nextCursor = null;
+        // 如果有下一页，则取最后一条记录的 Id 和 Date 作为下一个游标
+        if (hasNextPage)
+        {
+            EntryDto lastEntry = entries[^1]; // 取最后一条记录
+            nextCursor = EntryCursorDto.Encode(lastEntry.Id, lastEntry.Date); // 编码为下一个游标
+            entries.RemoveAt(entries.Count - 1); // 把多出来的那条去掉，只返回 Limit 条
+        }
+
+        var paginationResult = new CollectionResponse<ExpandoObject>
+        {
+            Items = dataShapingService.ShapeCollectionData(
+                entries,
+                query.Fields,
+                query.IncludeLinks ? e => CreateLinksForEntry(e.Id, query.Fields, e.IsArchived) : null)
+        };
+
+        if (query.IncludeLinks)
+        {
+            paginationResult.Links = CreateLinksForEntriesCursor(
+                query,
+                nextCursor);
+        }
+
+        return Ok(paginationResult);
+    }
+
+
+
+
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetEntry(
         string id,
@@ -494,4 +579,50 @@ public sealed class EntriesController(
 
         return links;
     }
+
+
+    //用于生成带游标的Links
+    private List<LinkDto> CreateLinksForEntriesCursor(
+        EntriesCursorQueryParameters parameters,
+        string? nextCursor)
+    {
+        List<LinkDto> links =
+        [
+            linkService.Create(nameof(GetEntriesCursor), "self", HttpMethods.Get, new
+            {
+                cursor = parameters.Cursor,
+                limit = parameters.Limit,
+                fields = parameters.Fields,
+                habitId = parameters.HabitId,
+                fromDate = parameters.FromDate,
+                toDate = parameters.ToDate,
+                source = parameters.Source,
+                isArchived = parameters.IsArchived
+            }),
+            linkService.Create(nameof(GetStats), "stats", HttpMethods.Get),
+            linkService.Create(nameof(CreateEntry), "create", HttpMethods.Post),
+            linkService.Create(nameof(CreateEntryBatch), "create-batch", HttpMethods.Post)
+        ];
+
+        //如果有下一页，则添加下一页的链接
+        if (!string.IsNullOrWhiteSpace(nextCursor))
+        {
+            links.Add(linkService.Create(nameof(GetEntriesCursor), "next-page", HttpMethods.Get, new
+            {
+                cursor = nextCursor,
+                limit = parameters.Limit,
+                fields = parameters.Fields,
+                habitId = parameters.HabitId,
+                fromDate = parameters.FromDate,
+                toDate = parameters.ToDate,
+                source = parameters.Source,
+                isArchived = parameters.IsArchived
+            }));
+        }
+
+        return links;
+    }
+
+
+
 }
