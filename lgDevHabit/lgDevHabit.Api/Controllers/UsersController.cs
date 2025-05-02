@@ -1,4 +1,5 @@
 ﻿using lgDevHabit.Api.Database;
+using lgDevHabit.Api.DTOs.Common;
 using lgDevHabit.Api.DTOs.Users;
 using lgDevHabit.Api.Entities;
 using lgDevHabit.Api.Services;
@@ -15,7 +16,8 @@ namespace lgDevHabit.Api.Controllers;
 [Authorize]
 public sealed class UsersController(
     ApplicationDbContext dbContext,
-    UserContext userContext
+    UserContext userContext,
+    LinkService linkService
     ) : ControllerBase
 {
 
@@ -44,7 +46,7 @@ public sealed class UsersController(
 
 
     [HttpGet("me")]
-    public async Task<ActionResult<UserDto>> GetCurrentUser()
+    public async Task<ActionResult<UserDto>> GetCurrentUser([FromHeader] AcceptHeaderDto acceptHeaderDto)
     {
         string? userId = await userContext.GetUserIdAsync();
         if (string.IsNullOrWhiteSpace(userId))
@@ -62,7 +64,48 @@ public sealed class UsersController(
             return NotFound();
         }
 
+        if (acceptHeaderDto.IncludeLinks)
+        {
+            user.Links = CreateLinksForUser();
+        }
+        
         return Ok(user);
+    }
+
+
+    [HttpPut("me/profile")]
+    public async Task<ActionResult> UpdateProfile(UpdateUserProfileDto dto)
+    {
+        string? userId = await userContext.GetUserIdAsync();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized();
+        }
+
+        User? user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        user.Name = dto.Name;
+        user.UpdatedAtUtc = DateTime.UtcNow;
+
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    private List<LinkDto> CreateLinksForUser()
+    {
+        List<LinkDto> links =
+        [
+            linkService.Create(nameof(GetCurrentUser), "self", HttpMethods.Get),
+            linkService.Create(nameof(UpdateProfile), "update-profile", HttpMethods.Put)
+        ];
+
+        return links;
     }
 
 }
