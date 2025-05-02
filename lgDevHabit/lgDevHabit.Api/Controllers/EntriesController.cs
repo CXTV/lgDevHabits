@@ -189,14 +189,17 @@ public sealed class EntriesController(
 
         await validator.ValidateAndThrowAsync(createEntryBatchDto);
 
+        //从请求中提取出所有 HabitId，去重后用于查询数据库。
         var habitIds = createEntryBatchDto.Entries
             .Select(e => e.HabitId)
             .ToHashSet();
 
+        //查询数据库中是否存在这些 HabitId，并且属于当前用户。
         List<Habit> existingHabits = await dbContext.Habits
             .Where(h => habitIds.Contains(h.Id) && h.UserId == userId)
             .ToListAsync();
 
+        //如果数据库中存在的 HabitId 数量和请求中提供的数量不一致，说明有无效的 HabitId。
         if (existingHabits.Count != habitIds.Count)
         {
             return Problem(

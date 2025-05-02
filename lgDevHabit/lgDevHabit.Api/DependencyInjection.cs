@@ -27,6 +27,7 @@ using lgDevHabit.Api.Jobs;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using CorsOptions = lgDevHabit.Api.Settings.CorsOptions;
 using Quartz;
+using lgDevHabit.Api.DTOs.Entries;
 
 namespace lgDevHabit.Api;
 
@@ -145,9 +146,11 @@ public static class DependencyInjection
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
         builder.Services.AddTransient<SortMappingProvider>();
-
+        //注册Habit映射
         builder.Services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<HabitDto, Habit>>(_ =>
             HabitMappings.SortMapping);
+        //注册Entry映射
+        builder.Services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<EntryDto, Entry>>(_ => EntryMappings.SortMapping);
 
         builder.Services.AddTransient<DataShapingService>();
 
