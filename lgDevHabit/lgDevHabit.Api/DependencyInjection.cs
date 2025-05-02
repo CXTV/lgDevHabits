@@ -28,6 +28,9 @@ using CorsOptions = lgDevHabit.Api.Settings.CorsOptions;
 using Quartz;
 using lgDevHabit.Api.DTOs.Entries;
 using Refit;
+using lgDevHabit.Api.Extensions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.Threading.RateLimiting;
 
 namespace lgDevHabit.Api;
 
@@ -267,6 +270,68 @@ public static class DependencyInjection
                 }));
         });
         builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
+        return builder;
+    }
+
+    //限流
+    public static WebApplicationBuilder AddRateLimiting(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddRateLimiter(options =>
+        {
+            //设置全局的限流器,当限流触发（请求太多被拒绝时），返回 HTTP 429 状态码，标准的「请求过多」
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.OnRejected = async (context, token) =>
+            {
+                if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out TimeSpan retryAfter))
+                {
+                    context.HttpContext.Response.Headers.RetryAfter = $"{retryAfter.TotalSeconds}";
+
+                    ProblemDetailsFactory problemDetailsFactory = context.HttpContext.RequestServices
+                        .GetRequiredService<ProblemDetailsFactory>();
+
+                    Microsoft.AspNetCore.Mvc.ProblemDetails problemDetails = problemDetailsFactory
+                        .CreateProblemDetails(
+                            context.HttpContext,
+                            StatusCodes.Status429TooManyRequests,
+                            title: "Too Many Requests",
+                            detail: $"Too many requests. Please try again in {retryAfter.TotalSeconds} seconds.");
+
+                    await context.HttpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken: token);
+                }
+            };
+
+            options.AddPolicy("default", httpContext =>
+            {
+                //string identityId = httpContext.User.Identity?.Name ?? string.Empty; // TO TEST RATE LIMITING
+                string identityId = httpContext.User.GetIdentityId() ?? string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(identityId))
+                {
+                    return RateLimitPartition.GetTokenBucketLimiter(
+                        identityId,
+                        _ =>
+                            new TokenBucketRateLimiterOptions
+                            {
+                                TokenLimit = 100,
+                                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                                QueueLimit = 5,
+                                ReplenishmentPeriod = TimeSpan.FromMinutes(1),
+                                TokensPerPeriod = 25
+                            });
+                }
+
+                return RateLimitPartition.GetFixedWindowLimiter(
+                    "anonymous",
+                    _ =>
+                    new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 5,
+                        Window = TimeSpan.FromMinutes(1)
+                    });
+            });
+        });
 
         return builder;
     }

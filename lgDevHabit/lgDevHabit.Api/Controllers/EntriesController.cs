@@ -9,12 +9,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Dynamic;
-using System.Linq.Dynamic.Core;
 using System.Net.Mime;
 using lgDevHabit.Api.DTOs.Entries;
+using lgDevHabit.Api.Services.Idempotency;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace lgDevHabit.Api.Controllers;
 
+[EnableRateLimiting("default")]
 [Authorize(Roles = Roles.Member)]
 [ApiController]
 [Route("entries")]
@@ -178,9 +180,6 @@ public sealed class EntriesController(
     }
 
 
-
-
-
     [HttpGet("{id}")]
     public async Task<IActionResult> GetEntry(
         string id,
@@ -222,6 +221,7 @@ public sealed class EntriesController(
     }
 
     [HttpPost]
+    [IdempotentRequest]
     public async Task<ActionResult<EntryDto>> CreateEntry(
         CreateEntryDto createEntryDto,
         [FromHeader] AcceptHeaderDto acceptHeader,
