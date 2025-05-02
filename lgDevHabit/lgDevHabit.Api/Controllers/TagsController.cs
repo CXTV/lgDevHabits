@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using lgDevHabit.Api.Services;
+using Microsoft.Extensions.Options;
+using lgDevHabit.Api.Settings;
 
 namespace lgDevHabit.Api.Controllers;
 
@@ -16,7 +18,9 @@ namespace lgDevHabit.Api.Controllers;
 public sealed class TagsController(
     ApplicationDbContext dbContext,
     LinkService linkService,
-    UserContext userContext
+    UserContext userContext,
+    IOptions<TagsOptions> options
+
     ) : ControllerBase
 {
 
@@ -42,10 +46,8 @@ public sealed class TagsController(
             Items = tags
         };
 
-        if (acceptHeader.IncludeLinks)
-        {
-            tagsCollectionDto.Links = CreateLinksForTags();
-        }
+
+
 
         return Ok(tagsCollectionDto);
     }
@@ -86,18 +88,6 @@ public sealed class TagsController(
         ProblemDetailsFactory problemDetailsFactory
     )
     {
-        //ValidationResult validationResult = await validator.ValidateAsync(createTagDto);
-
-        //if (!validationResult.IsValid)
-        //{
-        //    ProblemDetails problem = problemDetailsFactory.CreateProblemDetails(
-        //        HttpContext,
-        //        StatusCodes.Status400BadRequest);
-        //    problem.Extensions.Add("errors", validationResult.ToDictionary());
-
-        //    return BadRequest(problem);
-        //}
-
         string? userId = await userContext.GetUserIdAsync();
         if (string.IsNullOrWhiteSpace(userId))
         {
@@ -115,6 +105,15 @@ public sealed class TagsController(
 
             return BadRequest(problem);
         }
+
+        if (await dbContext.Tags.CountAsync(t => t.UserId == userId) >= options.Value.MaxAllowedTags)
+        {
+
+            return Problem(
+                "Reached the maximum number of allowed tags",
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+
 
         Tag tag = createTagDto.ToEntity(userId);
 
