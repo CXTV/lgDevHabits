@@ -41,7 +41,7 @@ public sealed class GitHubAccessTokenService(
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    //获取GitHub Access Token
+    //获取GitHub Access Token,并解密
     public async Task<string?> GetAsync(string userId, CancellationToken cancellationToken = default)
     {
         GitHubAccessToken? accessToken = await GetAccessTokenAsync(userId, cancellationToken);

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using lgDevHabit.Api.Database;
@@ -11,9 +12,11 @@ using lgDevHabit.Api.Database;
 namespace lgDevHabit.Api.Migrations.Application
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250502012100_Add_Entry")]
+    partial class Add_Entry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,76 +92,6 @@ namespace lgDevHabit.Api.Migrations.Application
                         .HasName("pk_identity_user");
 
                     b.ToTable("identity_user", "lgdev_habit");
-                });
-
-            modelBuilder.Entity("lgDevHabit.Api.Entities.Entry", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at_utc");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date")
-                        .HasColumnName("date");
-
-                    b.Property<string>("ExternalId")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)")
-                        .HasColumnName("external_id");
-
-                    b.Property<string>("HabitId")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("habit_id");
-
-                    b.Property<bool>("IsArchived")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_archived");
-
-                    b.Property<string>("Notes")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)")
-                        .HasColumnName("notes");
-
-                    b.Property<int>("Source")
-                        .HasColumnType("integer")
-                        .HasColumnName("source");
-
-                    b.Property<DateTime?>("UpdatedAtUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at_utc");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("integer")
-                        .HasColumnName("value");
-
-                    b.HasKey("Id")
-                        .HasName("pk_entries");
-
-                    b.HasIndex("ExternalId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_entries_external_id")
-                        .HasFilter("external_id IS NOT NULL");
-
-                    b.HasIndex("HabitId")
-                        .HasDatabaseName("ix_entries_habit_id");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_entries_user_id");
-
-                    b.ToTable("entries", "lgdev_habit");
                 });
 
             modelBuilder.Entity("lgDevHabit.Api.Entities.GitHubAccessToken", b =>
@@ -412,25 +345,6 @@ namespace lgDevHabit.Api.Migrations.Application
                         .HasDatabaseName("ix_users_identity_id");
 
                     b.ToTable("users", "lgdev_habit");
-                });
-
-            modelBuilder.Entity("lgDevHabit.Api.Entities.Entry", b =>
-                {
-                    b.HasOne("lgDevHabit.Api.Entities.Habit", "Habit")
-                        .WithMany()
-                        .HasForeignKey("HabitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_entries_habits_habit_id");
-
-                    b.HasOne("lgDevHabit.Api.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_entries_users_user_id");
-
-                    b.Navigation("Habit");
                 });
 
             modelBuilder.Entity("lgDevHabit.Api.Entities.GitHubAccessToken", b =>

@@ -9,7 +9,10 @@ services:
       - 5001:8081
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://lgdevhabit.aspire-dashboard:18889
-      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc 
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+    depends_on:
+      lgdevhabit.postgres:
+        condition: service_healthy 
 
   lgdevhabit.postgres:
     image: postgres:17.2
@@ -20,7 +23,12 @@ services:
     volumes:
       - ./.containers/postgres_data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - 5432:5432 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   lgdevhabit.aspire-dashboard:
     image: mcr.microsoft.com/dotnet/aspire-dashboard:9.0
