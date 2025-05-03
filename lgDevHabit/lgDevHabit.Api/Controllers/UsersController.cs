@@ -23,6 +23,7 @@ public sealed class UsersController(
 
     [HttpGet("{id}")]
     [Authorize(Roles = Roles.Admin)]
+
     public async Task<ActionResult<UserDto>> GetUserById(string id)
     {
         string? userId = await userContext.GetUserIdAsync();

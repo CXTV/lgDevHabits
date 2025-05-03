@@ -32,6 +32,7 @@ using lgDevHabit.Api.Extensions;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Threading.RateLimiting;
 using DevHabit.Api.Jobs;
+using System.Reflection;
 
 namespace lgDevHabit.Api;
 
@@ -60,7 +61,6 @@ public static class DependencyInjection
             formatter.SupportedMediaTypes.Add(CustomMediaTypeNames.Application.HateoasJsonV2);
         });
 
-
         //api versioning
         builder.Services
             .AddApiVersioning(options =>
@@ -77,8 +77,19 @@ public static class DependencyInjection
                         .Build());
             })
             .AddMvc();
+            //.AddApiExplorer()
 
-        builder.Services.AddOpenApi();
+        //builder.Services.AddOpenApi();
+
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.ResolveConflictingActions(descriptions=> descriptions.First());
+            string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+            options.IncludeXmlComments(xmlPath);
+        });
+
+
         builder.Services.AddResponseCaching();
 
         return builder;

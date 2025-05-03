@@ -13,6 +13,10 @@ using Microsoft.Extensions.Options;
 
 namespace lgDevHabit.Api.Controllers;
 
+
+/// <summary>
+/// login/register/refresh token
+/// </summary>
 [ApiController]
 [Route("auth")]
 [AllowAnonymous]
@@ -27,8 +31,14 @@ public sealed class AuthController(
 
     private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
 
-
+    /// <summary>
+    /// register a new user
+    /// </summary>
     [HttpPost("register")]
+    [ProducesResponseType(typeof(AccessTokensDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Register(RegisterUserDto registerUserDto)
     {
         //开启事务

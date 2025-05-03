@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
     <PackageReference Include="Bogus" />
     <PackageReference Include="CsvHelper" />
     <PackageReference Include="EFCore.NamingConventions" />
@@ -32,6 +33,12 @@
     <PackageReference Include="Quartz.Extensions.Hosting" />
     <PackageReference Include="Refit.HttpClientFactory" />
     <PackageReference Include="Refit.Newtonsoft.Json" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="System.Linq.Dynamic.Core" />
   </ItemGroup>
+  <PropertyGroup>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<NoWarn>$(NoWarn);1591</NoWarn>
+	<!-- 避免缺少注释的警告 -->
+  </PropertyGroup>
 </Project>

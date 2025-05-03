@@ -1,3 +1,4 @@
+using System.Reflection;
 using lgDevHabit.Api;
 using lgDevHabit.Api.Extensions;
 using lgDevHabit.Api.Middleware;
@@ -21,7 +22,9 @@ WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 
-    app.MapOpenApi();
+    //app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
     await app.ApplyMigrationsAsync();
     //app.ApplyHabitsSeed();
     await app.SeedInitialDataAsync();
