@@ -21,6 +21,10 @@ public sealed class Habit
 
     public List<HabitTag> HabitTags { get; set; }  //建立Habit和Tag之间的联系，通过中间表HabitTag
     public List<Tag> Tags { get; set; } //一个habit拥有多个标签
+
+    public static string NewId() => $"h_{Guid.CreateVersion7()}";
+
+
 }
 
 public enum HabitType

@@ -16,6 +16,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lgDevHabit.Api", "lgDevHabi
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lgDevHabit.UnitTests", "tests\lgDevHabit.UnitTests.csproj", "{9F820924-BCCC-43F1-A79A-266BDA601952}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C6058E70-994D-408E-92F0-4999600A16B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,12 +34,17 @@ Global
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F820924-BCCC-43F1-A79A-266BDA601952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F820924-BCCC-43F1-A79A-266BDA601952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F820924-BCCC-43F1-A79A-266BDA601952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F820924-BCCC-43F1-A79A-266BDA601952}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{207918A8-A7A5-4418-BD20-C7E861DDB10D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{9F820924-BCCC-43F1-A79A-266BDA601952} = {C6058E70-994D-408E-92F0-4999600A16B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F1F17170-B930-4CBA-B5C8-345110562CF3}
